@@ -1,6 +1,3 @@
-//console.log("testing");
-const { bubbleSort } = require("./funcs/sortfunc.cjs");
-let sortArr = new bubbleSort();
 class TreeNode {
     constructor(data, leftNode = null, rightNode = null) {
         this.data = data;
@@ -9,25 +6,69 @@ class TreeNode {
     }
 }
 class BST {
-    constructor() {
-        this.root = null;
+    constructor(arr) {
+        this.root;
+        this.arr = arr;
     }
-    buildTree(arr) {
-        const sortedArr = bubbleSort(arr);
-    }
-    add(data) {
-        const TreeNode = this.root;
-    }
-    prettyPrint(node, prefix = "", isLeft = true) {
-        if (node.right !== null) {
-            this.prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+    buildTree() {
+        const sortedArr = this.arr.sort(function (a, b) {
+            return a - b;
+        });
+        const finalArr = [...new Set(sortedArr)];
+        const start = 0;
+        const end = finalArr.length - 1;
+        const mid = start + (end - start) / 2;
+        const rootNode = new TreeNode(finalArr[mid]);
+        this.root = rootNode;
+        for (let i = mid - 1; i >= 0; i--) {
+            this.insert(finalArr[i]);
         }
-        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-        if (node.left !== null) {
-            this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+        for (let i = mid + 1; i < finalArr.length; i++) {
+            this.insert(finalArr[i]);
+        }
+        return this.root;
+    }
+    insert(data) {
+        const newNode = new TreeNode(data);
+        if (this.root === null) {
+            this.root = newNode;
+        }
+        else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (node.left === null) {
+                node.left = newNode;
+            }
+            else {
+                this.insertNode(node.left, newNode);
+            }
+        }
+        else {
+            if (node.right === null) {
+                node.right = newNode;
+            }
+            else {
+                this.insertNode(node.right, newNode);
+            }
         }
     }
 }
-let arr = bubbleSort([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-console.log(arr);
+function prettyPrint(node, prefix = "", isLeft = true) {
+    if (node.right !== null) {
+        prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+    if (node.left !== null) {
+        prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
+}
+const newTree = new BST([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+newTree.buildTree();
+newTree.insert(6);
+newTree.insert(320);
+newTree.insert(4);
+prettyPrint(newTree.root);
 //# sourceMappingURL=index.js.map
