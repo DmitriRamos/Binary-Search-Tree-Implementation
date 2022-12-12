@@ -5,8 +5,10 @@
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "skipLibCheck": true
   },
   "lib": ["es2015"],
-  "include": ["src/index.ts", "./funcs/sortfunc.js"]
+  "include": ["src/index.ts"],
+  "exclude": ["node_modules", "typings"]
 }

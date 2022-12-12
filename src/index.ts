@@ -48,6 +48,32 @@ class BST {
     }
   }
 
+  delete(value: number, node: TreeNode) {
+    if (node.data === value) {
+      if (node.left === null && node.right != null) {
+        node.data = node.right.data;
+        node.right = null;
+      }
+      if (node.left != null && node.right === null) {
+        node.data = node.left.data;
+        node.left = null;
+      }
+      if (node.left != null && node.right != null) {
+        if (node.right != null) {
+          node.data = node.right.data;
+          node.right = node.right.right;
+        } else {
+          node.data = node.left.data;
+          node.left = null;
+        }
+      }
+    } else if (node.data > value) {
+      this.delete(value, node.left);
+    } else if (node.data < value) {
+      this.delete(value, node.right);
+    }
+  }
+
   insertNode(node: TreeNode, newNode: TreeNode) {
     if (newNode.data < node.data) {
       if (node.left === null) {
@@ -55,7 +81,7 @@ class BST {
       } else {
         this.insertNode(node.left, newNode);
       }
-    } else {
+    } else if (newNode.data > node.data) {
       if (node.right === null) {
         node.right = newNode;
       } else {
@@ -63,20 +89,24 @@ class BST {
       }
     }
   }
+
+  prettyPrint(node: TreeNode, prefix = "", isLeft = true) {
+    if (node.right !== null) {
+      this.prettyPrint(
+        node.right,
+        `${prefix}${isLeft ? "│   " : "    "}`,
+        false
+      );
+    }
+    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+    if (node.left !== null) {
+      this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
+  }
 }
 
-function prettyPrint(node: TreeNode, prefix = "", isLeft = true) {
-  if (node.right !== null) {
-    prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-  }
-  console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-  if (node.left !== null) {
-    prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-  }
-}
-const newTree = new BST([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+const newTree = new BST([1, 7, 8, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 newTree.buildTree();
-newTree.insert(6);
-newTree.insert(320);
-newTree.insert(4);
-prettyPrint(newTree.root);
+newTree.insert(22);
+newTree.delete(67, newTree.root);
+newTree.prettyPrint(newTree.root);
